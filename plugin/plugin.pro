@@ -13,12 +13,12 @@ DESTDIR = ../$$QML_IMPORT_NAME
 TARGET = qt-gst-player
 
 HEADERS += \
-	gstpipeline.hpp \
+	gstplayer.hpp \
 	plugin.hpp
 
 SOURCES += \
 	plugin.cpp \
-	gstpipeline.cpp
+	gstplayer.cpp
 
 target.path = $$[QT_INSTALL_QML]/$$QML_IMPORT_NAME
 

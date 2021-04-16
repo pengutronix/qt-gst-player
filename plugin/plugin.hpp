@@ -5,7 +5,7 @@
 
 #include <QQmlEngineExtensionPlugin>
 
-class QGstPipelineQmlPlugin : public QQmlExtensionPlugin
+class QGstPlayerQmlPlugin : public QQmlExtensionPlugin
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID QQmlEngineExtensionInterface_iid)

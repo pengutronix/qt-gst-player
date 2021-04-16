@@ -7,7 +7,7 @@
 
 #include <gst/gst.h>
 
-void QGstPipelineQmlPlugin::registerTypes(const char *uri)
+void QGstPlayerQmlPlugin::registerTypes(const char *uri)
 {
 	Q_UNUSED(uri);
 	gst_init(0,0);

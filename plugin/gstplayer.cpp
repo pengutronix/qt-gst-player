@@ -8,13 +8,13 @@
 
 #include <iostream>
 
-#include "gstpipeline.hpp"
+#include "gstplayer.hpp"
 
-Q_LOGGING_CATEGORY(lcGstPipeline, "gst.pipeline", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcGstPlayer, "gst.player", QtWarningMsg)
 
 static bool sync = true;
 
-QtGstPipeline::QtGstPipeline() :
+QtGstPlayer::QtGstPlayer() :
 		m_pipeline(NULL),
 		m_sink(NULL),
 		m_state(PipelineState::Play),
@@ -34,7 +34,7 @@ QtGstPipeline::QtGstPipeline() :
 	connect(&m_positionUpdater, SIGNAL(timeout()), this, SLOT(queryPosition()));
 }
 
-QtGstPipeline::~QtGstPipeline()
+QtGstPlayer::~QtGstPlayer()
 {
 	gst_element_set_state(m_pipeline, GST_STATE_NULL);
 	GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(m_pipeline));
@@ -43,38 +43,38 @@ QtGstPipeline::~QtGstPipeline()
 	g_object_unref(m_pipeline);
 }
 
-void QtGstPipeline::play()
+void QtGstPlayer::play()
 {
 	setState(PipelineState::Play);
 }
 
-void QtGstPipeline::pause()
+void QtGstPlayer::pause()
 {
 	setState(PipelineState::Pause);
 }
 
-void QtGstPipeline::stop()
+void QtGstPlayer::stop()
 {
 	setState(PipelineState::Stop);
 }
 
-void QtGstPipeline::seek(qint64 offset)
+void QtGstPlayer::seek(qint64 offset)
 {
 	if (m_seekable) {
 		queryPosition();
 		setPosition(m_position + offset);
 	}
 	else {
-		qCInfo(lcGstPipeline, "seeking is not available in this stream");
+		qCInfo(lcGstPlayer, "seeking is not available in this stream");
 	}
 }
 
-bool QtGstPipeline::verbose() const
+bool QtGstPlayer::verbose() const
 {
 	return m_verbose;
 }
 
-void QtGstPipeline::setVerbose(bool verbose)
+void QtGstPlayer::setVerbose(bool verbose)
 {
 	if (verbose != m_verbose) {
 		m_verbose = verbose;
@@ -83,49 +83,49 @@ void QtGstPipeline::setVerbose(bool verbose)
 }
 
 bool
-QtGstPipeline::audio() const
+QtGstPlayer::audio() const
 {
 	return m_audio;
 }
 
 void
-QtGstPipeline::setAudio(bool audio)
+QtGstPlayer::setAudio(bool audio)
 {
 	m_audio = audio;
 }
 
 bool
-QtGstPipeline::mute() const
+QtGstPlayer::mute() const
 {
 	return m_mute;
 }
 
 void
-QtGstPipeline::setMute(bool mute)
+QtGstPlayer::setMute(bool mute)
 {
-	qCDebug(lcGstPipeline, "audio %s", mute ? "muted" : "unmuted");
+	qCDebug(lcGstPlayer, "audio %s", mute ? "muted" : "unmuted");
 	m_mute = mute;
 	if (m_pipeline)
 		g_object_set(G_OBJECT(m_pipeline), "mute", mute, NULL);
 }
 
 double
-QtGstPipeline::volume() const
+QtGstPlayer::volume() const
 {
 	return m_volume;
 }
 
 void
-QtGstPipeline::setVolume(double volume)
+QtGstPlayer::setVolume(double volume)
 {
-	qCDebug(lcGstPipeline, "volume set to %.1f %%", 100.0 * volume);
+	qCDebug(lcGstPlayer, "volume set to %.1f %%", 100.0 * volume);
 	m_volume = volume;
 	if (m_pipeline)
 		g_object_set(G_OBJECT(m_pipeline), "volume", volume, NULL);
 }
 
 void
-QtGstPipeline::queryPosition()
+QtGstPlayer::queryPosition()
 {
 	gint64 position;
 
@@ -147,26 +147,26 @@ QtGstPipeline::queryPosition()
 			emit positionChanged(m_position);
 		}
 		else {
-			qCDebug(lcGstPipeline, "emitting queued positionChanged signal");
+			qCDebug(lcGstPlayer, "emitting queued positionChanged signal");
 			QMetaObject::invokeMethod(this, "positionChanged",
 				Qt::QueuedConnection, Q_ARG(qint64, m_position));
 		}
 	}
 }
 
-qint64 QtGstPipeline::position() const
+qint64 QtGstPlayer::position() const
 {
 	return m_position;
 }
 
-void QtGstPipeline::setPosition(qint64 position)
+void QtGstPlayer::setPosition(qint64 position)
 {
 	if (position < 0)
 		position = 0;
 
 	if (m_seekable) {
 		gint64 start;
-		qCDebug(lcGstPipeline, "set position to %lld", position);
+		qCDebug(lcGstPlayer, "set position to %lld", position);
 
 		if (m_pipeline) {
 			start =  position * 1'000'000;
@@ -184,24 +184,24 @@ void QtGstPipeline::setPosition(qint64 position)
 				emit positionChanged(position);
 			}
 			else {
-				qCDebug(lcGstPipeline, "emitting queued positionChanged signal");
+				qCDebug(lcGstPlayer, "emitting queued positionChanged signal");
 				QMetaObject::invokeMethod(this, "positionChanged",
 					Qt::QueuedConnection, Q_ARG(qint64, position));
 			}
 		}
 	}
 	else {
-		qCInfo(lcGstPipeline, "setting position is not available in this stream");
+		qCInfo(lcGstPlayer, "setting position is not available in this stream");
 	}
 }
 
-qint64 QtGstPipeline::duration() const
+qint64 QtGstPlayer::duration() const
 {
 	return m_duration;
 }
 
 void
-QtGstPipeline::queryDuration()
+QtGstPlayer::queryDuration()
 {
 	GstState state;
 	gint64 duration = 0;
@@ -225,53 +225,53 @@ QtGstPipeline::queryDuration()
 
 	if (duration != m_duration) {
 		m_duration = duration;
-		qCDebug(lcGstPipeline, "duration changed to %lld", m_duration);
+		qCDebug(lcGstPlayer, "duration changed to %lld", m_duration);
 		m_durationChanged = false;
 		if (QThread::currentThread() == thread()) {
 			emit durationChanged(m_duration);
 		}
 		else {
-			qCDebug(lcGstPipeline, "emitting queued durationChanged signal");
+			qCDebug(lcGstPlayer, "emitting queued durationChanged signal");
 			QMetaObject::invokeMethod(this, "durationChanged",
 				Qt::QueuedConnection, Q_ARG(qint64, m_duration));
 		}
 	}
 }
 
-gboolean QtGstPipeline::seekable() const
+gboolean QtGstPlayer::seekable() const
 {
 	return m_seekable;
 }
 
-QString QtGstPipeline::source() const
+QString QtGstPlayer::source() const
 {
 	return m_source;
 }
 
-void QtGstPipeline::setSource(QString source)
+void QtGstPlayer::setSource(QString source)
 {
 	m_source = source;
 	updatePipeline();
 }
 
-QString QtGstPipeline::uploadVideoFormat() const
+QString QtGstPlayer::uploadVideoFormat() const
 {
 	return m_uploadVideoFormat;
 }
 
-void QtGstPipeline::setUploadVideoFormat(QString format)
+void QtGstPlayer::setUploadVideoFormat(QString format)
 {
 	m_uploadVideoFormat = format;
 }
 
 QObject*
-QtGstPipeline::sink() const
+QtGstPlayer::sink() const
 {
 	return m_sink;
 }
 
 void
-QtGstPipeline::setSink(QObject *sink)
+QtGstPlayer::setSink(QObject *sink)
 {
 	m_sink = sink;
 	connect(m_sink, SIGNAL(itemInitializedChanged()),
@@ -280,27 +280,27 @@ QtGstPipeline::setSink(QObject *sink)
 }
 
 void
-QtGstPipeline::setupElementCallback(GstElement *element)
+QtGstPlayer::setupElementCallback(GstElement *element)
 {
 	if (g_strcmp0("v4l2h264dec", G_OBJECT_CLASS_NAME(G_OBJECT_GET_CLASS(element))) == 0)
 		g_object_set(G_OBJECT(element), "capture-io-mode", 4, NULL);
 }
 
 void
-QtGstPipeline::setup_element_callback(GstElement *bin, GstElement *element, gpointer data)
+QtGstPlayer::setup_element_callback(GstElement *bin, GstElement *element, gpointer data)
 {
 	Q_UNUSED(bin);
-	QtGstPipeline *pipeline = static_cast<QtGstPipeline*>(data);
+	QtGstPlayer *pipeline = static_cast<QtGstPlayer*>(data);
 	pipeline->setupElementCallback(element);
 }
 
-QtGstPipeline::PipelineState QtGstPipeline::state() const
+QtGstPlayer::PipelineState QtGstPlayer::state() const
 {
 	return m_state;
 }
 
 void
-QtGstPipeline::setState(PipelineState state)
+QtGstPlayer::setState(PipelineState state)
 {
 	GstState gst_state, pending;
 	bool isPlaying;
@@ -346,7 +346,7 @@ QtGstPipeline::setState(PipelineState state)
 	emit stateChanged(state);
 }
 
-void QtGstPipeline::updatePipeline()
+void QtGstPlayer::updatePipeline()
 {
 
 	if (!m_ready)
@@ -405,7 +405,7 @@ void QtGstPipeline::updatePipeline()
 		g_signal_connect(m_pipeline, "element-setup", G_CALLBACK(setup_element_callback), this);
 
 		if (!m_pipeline) {
-			qCWarning(lcGstPipeline, "Failed to create playbin element, \
+			qCWarning(lcGstPlayer, "Failed to create playbin element, \
 				  is the GStreamer playback plugin installed?");
 			return;
 		}
@@ -425,14 +425,14 @@ void QtGstPipeline::updatePipeline()
 	/* custom pipeline */
 	else {
 		source.remove(0, prefix.length());
-		m_pipeline = gst_pipeline_new("QtGstPipeline");
+		m_pipeline = gst_pipeline_new("QtGstPlayer");
 		GstElement *sourceBin = gst_parse_bin_from_description(source.toLatin1().data(), true, NULL);
 		gst_bin_add_many(GST_BIN(m_pipeline), sourceBin, sinkBin, NULL);
 		gst_element_link(sourceBin, sinkBin);
 	}
 
 	GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(m_pipeline));
-	gst_bus_add_watch(bus, QtGstPipeline::bus_callback, this);
+	gst_bus_add_watch(bus, QtGstPlayer::bus_callback, this);
 	gst_object_unref(bus);
 
 	if (m_verbose)
@@ -446,19 +446,19 @@ void QtGstPipeline::updatePipeline()
 }
 
 gboolean
-QtGstPipeline::bus_callback(GstBus *bus, GstMessage *msg, gpointer data)
+QtGstPlayer::bus_callback(GstBus *bus, GstMessage *msg, gpointer data)
 {
-	QtGstPipeline *pipeline = static_cast<QtGstPipeline*>(data);
+	QtGstPlayer *pipeline = static_cast<QtGstPlayer*>(data);
 	return pipeline->busCallback(bus, msg);
 }
 
 bool
-QtGstPipeline::busCallback(GstBus *bus, GstMessage *msg)
+QtGstPlayer::busCallback(GstBus *bus, GstMessage *msg)
 {
 	Q_UNUSED(bus);
 	switch(GST_MESSAGE_TYPE(msg)) {
 	case GST_MESSAGE_EOS:
-		qCDebug(lcGstPipeline, "got EOS for %s", source().toLatin1().data());
+		qCDebug(lcGstPlayer, "got EOS for %s", source().toLatin1().data());
 		if (!m_loop) {
 			m_state = PipelineState::Stop;
 			emit stateChanged(m_state);
@@ -481,7 +481,7 @@ QtGstPipeline::busCallback(GstBus *bus, GstMessage *msg)
 		GError *err;
 		gchar *debug;
 		gst_message_parse_error(msg, &err, &debug);
-		qCCritical(lcGstPipeline, "GStreamer Error Message: %s - %s",err->message, debug);
+		qCCritical(lcGstPlayer, "GStreamer Error Message: %s - %s",err->message, debug);
 		g_free(debug);
 		g_error_free(err);
 		break;
@@ -491,7 +491,7 @@ QtGstPipeline::busCallback(GstBus *bus, GstMessage *msg)
 			const GstStructure *s = gst_message_get_structure(msg);
 			if (gst_structure_has_field(s, "uri") &&
 			    gst_structure_has_field(s, "bitrate")) {
-				qCDebug(lcGstPipeline, "switch source uri: %s", gst_structure_get_string(s, "uri"));
+				qCDebug(lcGstPlayer, "switch source uri: %s", gst_structure_get_string(s, "uri"));
 			}
 		}
 		break;
@@ -502,19 +502,19 @@ QtGstPipeline::busCallback(GstBus *bus, GstMessage *msg)
 }
 
 void
-QtGstPipeline::onItemInitializeChanged()
+QtGstPlayer::onItemInitializeChanged()
 {
 	if (m_sink->property("itemInitialized").toBool())
 		setState(m_state);
 }
 
 void
-QtGstPipeline::classBegin()
+QtGstPlayer::classBegin()
 {
 }
 
 void
-QtGstPipeline::componentComplete()
+QtGstPlayer::componentComplete()
 {
 	m_ready = true;
 	updatePipeline();

@@ -13,7 +13,7 @@
 
 #include <gst/gst.h>
 
-class QtGstPipeline : public QObject, public QQmlParserStatus
+class QtGstPlayer : public QObject, public QQmlParserStatus
 {
 	Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)
@@ -43,8 +43,8 @@ public:
 		NATIVE_VIDEO = 0x40
 	};
 
-	QtGstPipeline();
-	~QtGstPipeline();
+	QtGstPlayer();
+	~QtGstPlayer();
 
 	PipelineState state() const;
 	void setState(PipelineState state);
