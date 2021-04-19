@@ -126,5 +126,4 @@ signals:
 	void durationChanged(gint64 newDuration);
 	void seekableChanged();
 	void sourceChanged();
-
 };

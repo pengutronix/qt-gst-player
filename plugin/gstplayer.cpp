@@ -6,8 +6,6 @@
 #include <QLoggingCategory>
 #include <QtConcurrent>
 
-#include <iostream>
-
 #include "gstplayer.hpp"
 
 Q_LOGGING_CATEGORY(lcGstPlayer, "gst.player", QtWarningMsg)
