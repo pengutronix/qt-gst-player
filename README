@@ -1,4 +1,4 @@
-qt-gst-pipeline is a QML plugin (extension) that provides the GstVideo QML
+qt-gst-player is a QML plugin (extension) that provides the GstVideo QML
 video playback item.
 
 Project Structure
@@ -14,3 +14,8 @@ relevant files for the plugin reside in the plugin/ folder.
 application can be found in the demo/ folder. The demo application is meant to
 test the plugin by setting up a minimal QML application with a GstVideo item
 inside it and some buttons to test its features and properties.
+
+CONTRIBUTION
+============
+
+Patches can be send to the Mailinglist: oss-tools@pengutronix.de
