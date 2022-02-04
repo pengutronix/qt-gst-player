@@ -378,7 +378,9 @@ void QtGstPlayer::updatePipeline()
 	GstElement *upload = gst_element_factory_make("glupload", NULL);
 	GstElement *sink = gst_element_factory_make("qmlglsink", NULL);
 
-	g_object_set(G_OBJECT(sink), "widget", m_sink, NULL);
+	g_object_set(G_OBJECT(sink), "widget", m_sink,
+				     "processing-deadline", 35 * GST_MSECOND,
+				     "max-lateness", 15 * GST_MSECOND, NULL);
 
 	gst_bin_add_many(GST_BIN(sinkBin), upload, sink, NULL);
 	gst_element_link_many(upload, sink, NULL);
