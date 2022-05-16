@@ -107,6 +107,18 @@ QtGstPlayer::setMute(bool mute)
 		g_object_set(G_OBJECT(m_pipeline), "mute", mute, NULL);
 }
 
+bool
+QtGstPlayer::loop() const
+{
+	return m_loop;
+}
+
+void
+QtGstPlayer::setLoop(bool loop)
+{
+	m_loop = loop;
+}
+
 double
 QtGstPlayer::volume() const
 {

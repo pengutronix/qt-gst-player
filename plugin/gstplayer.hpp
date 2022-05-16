@@ -27,6 +27,7 @@ class QtGstPlayer : public QObject, public QQmlParserStatus
 	Q_PROPERTY(bool audio READ audio WRITE setAudio)
 	Q_PROPERTY(double volume READ volume WRITE setVolume)
 	Q_PROPERTY(bool mute READ mute WRITE setMute)
+	Q_PROPERTY(bool loop READ loop WRITE setLoop)
 	Q_PROPERTY(QString uploadVideoFormat READ uploadVideoFormat WRITE setUploadVideoFormat)
 	QML_NAMED_ELEMENT(GstPlayer)
 
@@ -71,6 +72,9 @@ public:
 
 	bool mute() const;
 	void setMute(bool mute);
+
+	bool loop() const;
+	void setLoop(bool loop);
 
 	double volume() const;
 	void setVolume(double volume);

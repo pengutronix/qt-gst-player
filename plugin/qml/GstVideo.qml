@@ -17,6 +17,7 @@ Item {
 	property alias audio : gst.audio
 	property alias volume : gst.volume
 	property alias mute : gst.mute
+	property alias loop : gst.loop
 	property alias uploadVideoFormat : gst.uploadVideoFormat
 
 	function play() { gst.play() }
