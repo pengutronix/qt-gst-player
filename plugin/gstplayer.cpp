@@ -10,8 +10,6 @@
 
 Q_LOGGING_CATEGORY(lcGstPlayer, "gst.player", QtWarningMsg)
 
-static bool sync = true;
-
 QtGstPlayer::QtGstPlayer() :
 		m_pipeline(NULL),
 		m_sink(NULL),
@@ -450,9 +448,6 @@ void QtGstPlayer::updatePipeline()
 	if (m_verbose)
 		g_signal_connect(m_pipeline, "deep-notify",
 				G_CALLBACK(gst_object_default_deep_notify), NULL);
-
-	if (!sync)
-		g_object_set(G_OBJECT(sinkBin), "sync", FALSE, NULL);
 
 	setState(m_state);
 }
