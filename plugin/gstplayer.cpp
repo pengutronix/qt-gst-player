@@ -408,14 +408,14 @@ void QtGstPlayer::updatePipeline()
 	QString prefix = "gst-pipeline:";
 	QString source = m_source;
 
-	/* default pipeline (playbin) */
+	/* default pipeline (playbin3) */
 	if (source.indexOf(prefix) != 0) {
-		m_pipeline = gst_element_factory_make("playbin", NULL);
+		m_pipeline = gst_element_factory_make("playbin3", NULL);
 
 		g_signal_connect(m_pipeline, "element-setup", G_CALLBACK(setup_element_callback), this);
 
 		if (!m_pipeline) {
-			qCWarning(lcGstPlayer, "Failed to create playbin element, \
+			qCWarning(lcGstPlayer, "Failed to create playbin3 element, \
 				  is the GStreamer playback plugin installed?");
 			return;
 		}
