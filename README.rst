@@ -18,8 +18,3 @@ The project consists of two parts:
   application can be found in the demo/ folder. The demo application is meant
   to test the plugin by setting up a minimal QML application with a GstVideo
   item inside it and some buttons to test its features and properties.
-
-CONTRIBUTION
-============
-
-Patches can be send to the Mailinglist: oss-tools@pengutronix.de
