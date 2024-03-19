@@ -12,5 +12,5 @@ void QGstPlayerQmlPlugin::registerTypes(const char *uri)
 	Q_UNUSED(uri);
 	gst_init(0,0);
 	// registers plugin for "import org.freedesktop.gstreamer.GLVideoItem 1.0"
-	gst_plugin_load_by_name("qmlgl");
+	gst_plugin_load_by_name("qml6");
 }
