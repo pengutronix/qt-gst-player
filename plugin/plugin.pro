@@ -22,11 +22,11 @@ SOURCES += \
 
 target.path = $$[QT_INSTALL_QML]/$$QML_IMPORT_NAME
 
-plugin_install.files = qmldir qml/GstVideo.qml
+plugin_install.files = qmldir qml/GstGLVideo.qml
 plugin_install.path = $$[QT_INSTALL_QML]/$$QML_IMPORT_NAME
 
 # Copy the qmldir file to the same folder as the plugin binary
-plugin_copy.files = qmldir qml/GstVideo.qml
+plugin_copy.files = qmldir qml/GstGLVideo.qml
 plugin_copy.path = $$DESTDIR
 COPIES += plugin_copy
 

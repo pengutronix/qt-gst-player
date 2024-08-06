@@ -2,7 +2,7 @@
 qt-gst-player
 =============
 
-This is a QML plugin (extension) that provides the GstVideo QML
+This is a QML plugin (extension) that provides the GstGLVideo QML
 video playback item.
 
 Project Structure
@@ -16,5 +16,5 @@ The project consists of two parts:
 
 - A demo application which uses the plugin. All relevant files for the demo
   application can be found in the demo/ folder. The demo application is meant
-  to test the plugin by setting up a minimal QML application with a GstVideo
+  to test the plugin by setting up a minimal QML application with a GstGLVideo
   item inside it and some buttons to test its features and properties.
