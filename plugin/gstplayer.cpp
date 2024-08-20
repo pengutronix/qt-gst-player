@@ -4,7 +4,7 @@
  */
 
 #include <QLoggingCategory>
-#include <QtConcurrent>
+#include <QThreadPool>
 
 #include "gstplayer.hpp"
 
@@ -333,19 +333,25 @@ QtGstPlayer::setState(PipelineState state)
 	if (m_sink->property("itemInitialized").toBool()) {
 		switch(state) {
 		case PipelineState::Play:
-			QtConcurrent::run(gst_element_set_state, m_pipeline, GST_STATE_PLAYING);
+			QThreadPool::globalInstance()->start([=] {
+				gst_element_set_state(m_pipeline, GST_STATE_PLAYING);
+			});
 			m_positionUpdater.start(500);
 			break;
 
 		case PipelineState::Pause:
 			GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(m_pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline.dot");
 			m_positionUpdater.stop();
-			QtConcurrent::run(gst_element_set_state, m_pipeline, GST_STATE_PAUSED);
+			QThreadPool::globalInstance()->start([=] {
+				gst_element_set_state(m_pipeline, GST_STATE_PAUSED);
+			});
 			break;
 
 		case PipelineState::Stop:
 			m_positionUpdater.stop();
-			QtConcurrent::run(gst_element_set_state, m_pipeline, GST_STATE_NULL);
+			QThreadPool::globalInstance()->start([=] {
+				gst_element_set_state(m_pipeline, GST_STATE_NULL);
+			});
 			break;
 		}
 	}
