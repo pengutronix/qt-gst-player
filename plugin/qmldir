@@ -1,4 +1,4 @@
 module GstPlayer
 plugin qt-gst-player
 
-GstVideo 1.0 GstVideo.qml
+GstGLVideo 1.0 GstGLVideo.qml

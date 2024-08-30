@@ -5,7 +5,7 @@
 
 import QtQuick 2.15
 import GstPlayer 1.0
-import org.freedesktop.gstreamer.GLVideoItem 1.0
+import org.freedesktop.gstreamer.Qt6GLVideoItem 1.0
 
 
 Item {
@@ -30,7 +30,7 @@ Item {
 		sink : gstsink
 	}
 
-	GstGLVideoItem {
+	GstGLQt6VideoItem {
 		id : gstsink
 		anchors.fill : parent
 	}

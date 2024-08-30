@@ -68,7 +68,7 @@ Rectangle {
 		}
 	}
 
-	GstVideo {
+	GstGLVideo {
 		id: player
 		y: toolbar.height
 		width: parent.width
