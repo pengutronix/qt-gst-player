@@ -442,7 +442,11 @@ void QtGstPlayer::updatePipeline()
 	else {
 		source.remove(0, prefix.length());
 		m_pipeline = gst_pipeline_new("QtGstPlayer");
-		GstElement *sourceBin = gst_parse_bin_from_description(source.toLatin1().data(), true, NULL);
+		GstElement *sourceBin = gst_parse_bin_from_description(source.toLatin1().data(), false, NULL);
+		if (GstPad *pad = gst_bin_find_unlinked_pad(GST_BIN(sourceBin), GST_PAD_SRC); pad) {
+			gst_element_add_pad(sourceBin, gst_ghost_pad_new("src", pad));
+			gst_object_unref(pad);
+		}
 		gst_bin_add_many(GST_BIN(m_pipeline), sourceBin, sinkBin, NULL);
 		gst_element_link(sourceBin, sinkBin);
 	}
